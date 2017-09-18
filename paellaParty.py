@@ -23,9 +23,9 @@ previousTweets = []
 
 
 def initiate_loop():
-    print("Status: Let the Paella Party begin!")
+    print("Status: Let the paella party begin!")
     while True:
-        data = api.GetUserTimeline(15213778)
+        data = api.GetUserTimeline(350695779)
         for status in data:
             tweetText = status.text
             if tweetText[0] != "@":
@@ -37,7 +37,7 @@ def initiate_loop():
                         # add tweet id to previousTweets list
                         previousTweets.append(status.id)
                         print("Added status id: ", status.id, "to previousTweets.")
-        time.sleep(3600)
+        time.sleep(300)
 
 
 if __name__ == "__main__":
