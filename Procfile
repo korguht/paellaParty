@@ -1,1 +1,1 @@
-web: python paellaparty.py
+web: python paellaParty.py
