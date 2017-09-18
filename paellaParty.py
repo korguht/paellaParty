@@ -23,6 +23,7 @@ previousTweets = []
 
 
 def initiate_loop():
+	print("Status: Let the Paella Party begin!")
     while True:
         data = api.GetUserTimeline(15213778)
         for status in data:
