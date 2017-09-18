@@ -18,24 +18,25 @@ api = twitter.Api(consumer_key="vHRc2kmvVGlbSQDCLWPs2ifKL",
                   consumer_secret="skedX80bprCPehS9RMfhDzKlE0ArzUvDs9ZkmlINW6YCAvHo0U",
                   access_token_key="15213778-5WTwUXaba0fwkslchwArg47HjkyMQnwWC723nab8C",
                   access_token_secret="dL9WMpKanfjYX8VutQcMtGudU0r3EHJajxP64ObOsQtAG")
-data = api.GetUserTimeline(15213778)
 
 previousTweets = []
 
 
 def initiate_loop():
     while True:
+        data = api.GetUserTimeline(15213778)
         for status in data:
             tweetText = status.text
             if tweetText[0] != "@":
                 if "Paella" in tweetText or "paella" in tweetText:
                     if status.id not in previousTweets:
                         # send twilio text message to phone
-                        message = twilioCli.messages.create(body=status.text, from_=myTwilNum, to=myCellNum)
+                        twilioCli.messages.create(body=status.text, from_=myTwilNum, to=myCellNum)
+                        print(status.text)
                         # add tweet id to previousTweets list
                         previousTweets.append(status.id)
                         print("Added status id: ", status.id, "to previousTweets.")
-        time.sleep(60)
+        time.sleep(3600)
 
 
 if __name__ == "__main__":
