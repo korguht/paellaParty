@@ -1,9 +1,7 @@
 """
-paellaParty! Rev.1
+paellaParty! Rev.2
 Monitors a twitter account id for tweets containing a specified keyword and recieve a text message
 when/if a match is found.
-
-Originally created
 """
 
 import twitter
