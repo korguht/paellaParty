@@ -12,37 +12,57 @@ from twilio.rest import Client
 from keys import *
 
 
-# keys are specified and imported from keys.py
-twilioCli = Client(accountSID, authToken)
-api = twitter.Api(consumer_key, consumer_secret, access_token_key, access_token_secret)
-previousTweets = []
-
-
 class PaellaParty():
 
     def __init__(self):
-        self.twittername = input("Enter twitter id to monitor: ")
-        self.monitortext = input("Enter keyword to monitor for: ")
-        self.initiate_loop(self.twittername, self.monitortext)
+        self.twitter_name = input("Enter twitter id to monitor: ")
+        self.monitor_text = input("Enter keyword to monitor for: ")
+        self.previous_tweets = self.getoldtweets()
+        self.initiate_loop()
 
-    def initiate_loop(self, twittername, monitortext):
+    def getdata(self):
+        api = twitter.Api(twitter_consumer_key, twitter_consumer_secret, twitter_access_token_key,
+                          twitter_access_token_secret)
+        data = api.GetUserTimeline(self.twitter_name)
+        return data
+
+    def getoldtweets(self):
+        tweetids_from_file = []
+        file = open("oldtweets.txt", "r")
+        for i in file:
+            i = i[:-1]
+            tweetids_from_file.append(i)
+        file.close()
+        return tweetids_from_file
+
+    def writeoldtweet(self, tweetid):
+        newid = str(tweetid) + "\n"
+        file = open("oldtweets.txt", "a")
+        file.write(newid)
+        file.close()
+
+    def sendsms(self, tweet):
+        twilio_cli = Client(twilio_accountSID, twilio_authToken)
+        twilio_cli.messages.create(body=tweet, from_=myTwilNum, to=myCellNum)
+
+    def initiate_loop(self):
         print("Status: Let the paella party begin!")
+        print("Now monitoring Twitter ID: (" + self.twitter_name + ") for the keyword: (" + self.monitor_text + ").")
         while True:
-            data = api.GetUserTimeline(twittername)
+            data = self.getdata()
             for status in data:
-                tweetText = status.text
-                if tweetText[0] != "@":
-                    if monitortext in tweetText:
-                        if status.id not in previousTweets:
+                tweet_text = status.text
+                if tweet_text[0] != "@":
+                    if self.monitor_text in tweet_text:
+                        if str(status.id) not in self.previous_tweets:
                             # paella party found - send twilio text message to phone
-                            twilioCli.messages.create(body=status.text, from_=myTwilNum, to=myCellNum)
-                            print(status.text)
+                            self.sendsms(status.text)
                             # add tweet id to previousTweets list
-                            previousTweets.append(status.id)
+                            self.writeoldtweet(status.id)
                             print("Added status id: ", status.id, "to previousTweets.")
             # check again in 5 minutes for new tweet
             time.sleep(300)
 
 
-if __name__ == "__main__":
-    start=PaellaParty()
+start = PaellaParty()
+start.getoldtweets()
