@@ -1,7 +1,7 @@
 # paellaParty
 Monitors a twitter id for a specified keyword, sends user a twilio SMS message if/when a match is found.
 
-Originally created to monitor a local pub's twitter in order to catch a deliciously elusive paella food truck. It works.
+_Originally created to monitor a local pub's twitter in order to catch a deliciously elusive paella food truck. It works._
 
 <strong>Summary</strong><br />
 * Enter a twitter id<br />
